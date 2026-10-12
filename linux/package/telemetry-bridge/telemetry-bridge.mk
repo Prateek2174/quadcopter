@@ -1,0 +1,13 @@
+TELEMETRY_BRIDGE_VERSION = 1.0
+TELEMETRY_BRIDGE_SITE = $(BR2_EXTERNAL_QUADCOPTER_PATH)/package/telemetry-bridge/src
+TELEMETRY_BRIDGE_SITE_METHOD = local
+
+define TELEMETRY_BRIDGE_BUILD_CMDS
+	$(MAKE) CC="$(TARGET_CC)" CFLAGS="$(TARGET_CFLAGS)" LDFLAGS="$(TARGET_LDFLAGS)" -C $(@D)
+endef
+
+define TELEMETRY_BRIDGE_INSTALL_TARGET_CMDS
+	$(INSTALL) -D -m 0755 $(@D)/telemetry-bridge $(TARGET_DIR)/usr/bin/telemetry-bridge
+endef
+
+$(eval $(generic-package))

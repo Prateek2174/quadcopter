@@ -1,0 +1,4 @@
+config BR2_PACKAGE_TELEMETRY_BRIDGE
+	bool "telemetry-bridge"
+	help
+	  UART bridge between the STM32 flight controller and Linux.

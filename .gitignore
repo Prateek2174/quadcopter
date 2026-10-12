@@ -1,0 +1,5 @@
+/linux/package/telemetry-bridge/src/telemetry-bridge
+/linux/package/telemetry-bridge/src/telemetry_bridge
+*.o
+vm_key
+vm_key.pub
