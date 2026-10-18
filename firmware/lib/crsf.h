@@ -1,3 +1,6 @@
+#ifndef CRSF_H
+#define CRSF_H
+
 #define CRSF_PAYLOAD_LENGTH_BYTES 22
 #define CRSF_CHANNELS 16
 
@@ -19,3 +22,12 @@
 #define CRSF_CH_3 500
 #define CRSF_CH_4 1811
 #define CRSF_CH_5 992
+
+
+
+void crsf_init(crsf_frame_t *p);
+void crsf_crc_byte(crsf_frame_t *p, uint8_t new_byte, bool type);
+bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte);
+void payload_to_channel(crsf_frame_t *p);
+
+#endif

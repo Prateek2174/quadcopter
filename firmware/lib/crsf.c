@@ -4,36 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
-#include <crsf.h> 
-
-// Define the CRSF frame structure for state machine
-
-typedef enum {
-
-    FSM_IDLE,         //wait till you get the SYNC byte
-    FSM_LEN,          //make sure LEN byte = 0x18
-    FSM_TYPE,         //check type
-    FSM_SKIP,
-    FSM_READ_PAYLOAD, //go through and read the payload by channel
-    FSM_CRC
-
-} crsf_state_t;
-
-//struct to hold the CRSF frame data
-
-typedef struct {
-
-    crsf_state_t state;
-    uint8_t crc;
-    uint8_t len; //length = type + payload + crc
-    uint8_t count;
-    uint8_t type;
-    uint8_t payload[CRSF_PAYLOAD_LENGTH_BYTES];
-
-    //need a 16 element array w/ length 11 bits
-    uint16_t channels[CRSF_CHANNELS];
-
-} crsf_frame_t;
+#include "crsf.h"
 
 void crsf_init(crsf_frame_t *p) {
 

@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include "crsf.h"
+
 int main(void) {
 
     crsf_frame_t p;
