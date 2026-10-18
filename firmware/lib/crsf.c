@@ -47,7 +47,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             if(new_byte == CRSF_SYNC){
 
-                p->state = FSM_LEN;
+                p->state = CRSF_FSM_LEN;
 
             }
 
@@ -60,11 +60,11 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
                 p->len = new_byte;
                 p->crc = 0;
-                p->state = FSM_TYPE;
+                p->state = CRSF_FSM_TYPE;
 
             } else { //len is garbage so we resync
 
-                p->state = FSM_IDLE;
+                p->state = CRSF_FSM_IDLE;
 
             }
 
@@ -76,7 +76,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
             
             if(p->type == CRSF_TYPE && p->len == CRSF_LEN){
 
-                p->state = FSM_READ_PAYLOAD;
+                p->state = CRSF_FSM_READ_PAYLOAD;
                 p->crc = 0;
                 p->count = 0;
                 crsf_crc_byte(p, new_byte, true); //crc covers type
@@ -97,7 +97,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             } else {
 
-                p->state = FSM_IDLE;
+                p->state = CRSF_FSM_IDLE;
 
             }
 
@@ -109,7 +109,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
             
             if(p->count == p->len - 2){
 
-                p->state = FSM_CRC;
+                p->state = CRSF_FSM_CRC;
             }        
 
             break;
@@ -118,11 +118,11 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             if (p->crc == new_byte)
             {
-                p->state = FSM_IDLE;
+                p->state = CRSF_FSM_IDLE;
                 return true;
             }
 
-            p->state = FSM_IDLE;
+            p->state = CRSF_FSM_IDLE;
             
             break;
 
@@ -133,7 +133,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 //computer CRC throughout the READ_PAYLOAD state
 //make sure to reset the calculated CRC at the end
 
-void payload_to_channel(crsf_frame_t *p){
+void crsf_payload_to_channel(crsf_frame_t *p){
 
     for (size_t i = 0; i < CRSF_CHANNELS; i++)
     {
