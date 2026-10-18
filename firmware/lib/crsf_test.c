@@ -1,6 +1,4 @@
 #include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include "crsf.h"
 
 int main(void) {
@@ -41,7 +39,7 @@ int main(void) {
             count++;
             printf("%zu \n", i);
 
-            payload_to_channel(&p);
+            crsf_payload_to_channel(&p);
 
             for (size_t j = 0; j < 16; j++)
             {

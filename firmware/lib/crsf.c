@@ -1,9 +1,4 @@
 // CRSF implementation for XR1 Nano
-//get the crsf frame and use a state machine to parse it
-
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdint.h>
 #include "crsf.h"
 
 void crsf_init(crsf_frame_t *p) {
@@ -48,7 +43,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
     //given the next byte handle what should happen based on current state
     switch (p -> state){
 
-        case FSM_IDLE:
+        case CRSF_FSM_IDLE:
 
             if(new_byte == CRSF_SYNC){
 
@@ -58,7 +53,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             break;
 
-        case FSM_LEN: //check length of incoming frame and store in p->len
+        case CRSF_FSM_LEN: //check length of incoming frame and store in p->len
 
             //the smallest len is 2 bytes => no payload just type + crc
             if(new_byte >= 2 && new_byte <= 62){
@@ -75,7 +70,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             break;
 
-        case FSM_TYPE: //if type == 0x16 then LEN must = 0x18 / 24 or ignore
+        case CRSF_FSM_TYPE: //if type == 0x16 then LEN must = 0x18 / 24 or ignore
 
             p->type = new_byte;
             
@@ -94,7 +89,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             break;
 
-        case FSM_SKIP:
+        case CRSF_FSM_SKIP:
 
             if(p->count < p->len-1){
 
@@ -108,7 +103,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             break;
 
-        case FSM_READ_PAYLOAD:
+        case CRSF_FSM_READ_PAYLOAD:
 
             crsf_crc_byte(p, new_byte, false);
             
@@ -119,7 +114,7 @@ bool crsf_byte_handler(crsf_frame_t *p, uint8_t new_byte) {
 
             break;
 
-        case FSM_CRC: //compare calculated crc with CRC8
+        case CRSF_FSM_CRC: //compare calculated crc with CRC8
 
             if (p->crc == new_byte)
             {
