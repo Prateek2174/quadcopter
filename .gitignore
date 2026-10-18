@@ -5,3 +5,4 @@ vm_key
 vm_key.pub
 firmware/Debug/
 firmware/Release/
+firmware/lib/crsf
