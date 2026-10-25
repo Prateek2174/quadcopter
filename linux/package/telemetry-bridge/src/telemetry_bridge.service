@@ -1,0 +1,13 @@
+[Unit]
+Description=telemetry bridge between the radxa and stm32
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+ExecStart=/home/prateek/quadcopter/linux/package/telemetry-bridge/src/telemetry_bridge
+Type=notify
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=multi-user.target

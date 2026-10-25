@@ -1,4 +1,4 @@
-
+#include <systemd/sd-daemon.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <time.h>
@@ -8,6 +8,7 @@
 //then at every second print a line with a counter
 
 int main(void) {
+    
 
     unsigned counter = 0;
     struct timespec next;
@@ -19,6 +20,21 @@ int main(void) {
     setvbuf(stdout, NULL, _IOLBF, 0); //use NULL for buff
     
     printf("telemetry-bridge up\n");
+
+    //tell systemd the daemon is ready
+    int ret = sd_notify(0, "READY=1"); //ret > 0 == message sent
+                                       //ret = 0 == no $NOTIFY_SOCKET
+                                       //ret < 0 == error
+
+    if(ret == 0){
+
+        fprintf(stderr, "NOTIFY_SOCKET not set\n");
+
+    } else if (ret < 0)
+    {
+        fprintf(stderr, "sd_notify(READY=1) failed: %s\n", strerror(-ret));
+    }
+    
 
     while(1) {
 
