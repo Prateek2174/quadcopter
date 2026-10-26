@@ -8,6 +8,9 @@ ExecStart=/home/prateek/quadcopter/linux/package/telemetry-bridge/src/telemetry_
 Type=notify
 Restart=always
 RestartSec=1
+WatchdogSec=2
+CPUQuota=20%
+MemoryMax=1M
 
 [Install]
 WantedBy=multi-user.target
