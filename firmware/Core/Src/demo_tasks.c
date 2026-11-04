@@ -5,22 +5,100 @@
  *      Author: prate
  */
 #include "demo_tasks.h"
+#include "app_config.h"
 
-void vTaskSlow(void){
+static volatile uint32_t slow_err_count;
+static volatile uint32_t fast_err_count;
+static volatile uint32_t slow_max_lateness;
+static volatile uint32_t fast_max_lateness;
 
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+uint32_t demo_tasks_get_fast_err(void){
+	return fast_err_count;
+}
 
-	BaseType_t xWasDelayed = xTaskDelayUntil( &xLastWakeTime, FAST_PERIOD_TICKS);
+uint32_t demo_tasks_get_slow_err(void){
+	return slow_err_count;
+}
+
+uint32_t demo_tasks_get_fast_max_late(void){
+	return fast_max_lateness;
+}
+
+uint32_t demo_tasks_get_slow_max_late(void){
+	return slow_max_lateness;
+}
+
+static void slow_task(void * pv_parameters){
+
+	TickType_t last_wake_time = xTaskGetTickCount();
+	TickType_t lateness;
+
+	//start work:
+
+	for(;;){
+
+		// Wait for the next cycle.
+		vTaskDelayUntil(&last_wake_time, SLOW_PERIOD_TICKS);
+
+		lateness = xTaskGetTickCount() - last_wake_time;
+		// Perform action here. was_delayed value can be used to determine
+		// whether a deadline was missed if the code here took too long.
+
+		if(lateness > 0){
+
+			//TODO: count it & record how late it was
+
+			slow_err_count++;
+
+			if(lateness > slow_max_lateness){
+
+				slow_max_lateness = lateness;
+
+			}
+
+		}
 
 
+
+	}
 
 }
 
-void vTaskFast(void){
+static void fast_task(void * pv_parameters){
 
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+	TickType_t last_wake_time = xTaskGetTickCount();
+	TickType_t lateness;
 
-	BaseType_t xWasDelayed = xTaskDelayUntil(&xLastWakeTime, SLOW_PERIOD_TICKS);
+
+	for(;;){
+
+		// Wait for the next cycle.
+		vTaskDelayUntil(&last_wake_time, FAST_PERIOD_TICKS);
+
+		lateness = xTaskGetTickCount() - last_wake_time;
+
+		// Perform action here. was_delayed value can be used to determine
+		// whether a deadline was missed if the code here took too long.
+
+		//start work:
+
+
+		//end work
+
+		if(lateness > 0){
+
+			//TODO: if not delayed check
+			fast_err_count++;
+
+			if(lateness > fast_max_lateness){
+
+				fast_max_lateness = lateness;
+
+			}
+
+		}
+
+	}
 
 }
 
@@ -33,8 +111,8 @@ void demo_tasks_init(void){
 
 	//fast task:
 
-	 BaseType_t xFastOk = xTaskCreate(vTaskFast,
-									 "fast_slow",
+	 BaseType_t fast_task_ok = xTaskCreate(fast_task,
+									 "fast_task",
 									 STACK_FAST_WORDS,
 									 NULL,
 									 PRI_TASK_FAST,
@@ -43,7 +121,7 @@ void demo_tasks_init(void){
 
 	 //slow task:
 
-	 BaseType_t xSlowOk = xTaskCreate(vTaskSlow,
+	 BaseType_t slow_task_ok = xTaskCreate(slow_task,
 									 "slow_task",
 									 STACK_SLOW_WORDS,
 									 NULL,
@@ -52,8 +130,17 @@ void demo_tasks_init(void){
 									 );
 
 
+		 //TODO: do something here if the task failed to create
+
+	 configASSERT(fast_task_ok == pdPASS);
+
+		 //disables interrupts and spins forever,
+		 //which parks the CPU at a place a debugger can find
 
 
+		//TODO: do something here if the task failed to create
+
+	configASSERT(slow_task_ok == pdPASS);
 
 
 }
