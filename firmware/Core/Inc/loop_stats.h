@@ -9,21 +9,35 @@
 #define INC_LOOP_STATS_H_
 
 #include <stdint.h>
+#include <stdbool.h>
 
-//TODO: min, max, mean, jitter and count from one timestamp per loop.
-//		Pure logic, testable on your PC.
+typedef struct{
 
+	bool prev_exists;
+	uint32_t prev_timestamp;
+	uint32_t min;
+	uint32_t max;
+	uint64_t sum;
+	uint32_t count;
 
-//TODO: What does “jitter” mean in your report:
-//		max minus min, or standard deviation? The mean must not overflow over many samples.
+}loop_stats_t;
+
+typedef struct{
+
+	uint32_t min;
+	uint32_t max;
+	uint64_t mean;
+	uint32_t jitter;
+
+}loop_stats_result_t;
 
 //TODO: loop_stats_reset,
 //		loop_stats_record (one timestamp per loop)
 //		loop_stats_get (min, max, mean, jitter)
 //		and a way to know N samples are in
 
-void loop_stats_reset(Typedef *stats); //takes in a stats object
-bool loop_stats_record(Typedef *stats, uint32_t timestamp); //should timestamp be a TickType_t
-void loop_stats_get();
+void loop_stats_reset(loop_stats_t *stats); //takes in a stats object
+bool loop_stats_record(loop_stats_t *stats, uint32_t timestamp); //TRUE = produced a period
+bool loop_stats_get(loop_stats_t *stats, loop_stats_result_t *result);
 
 #endif /* INC_LOOP_STATS_H_ */

@@ -11,6 +11,7 @@
 #include <stdbool.h>
 
 typedef struct{
+
 	int16_t gyro_x;
 	int16_t gyro_y;
 	int16_t gyro_z;
