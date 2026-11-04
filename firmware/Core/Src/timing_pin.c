@@ -6,6 +6,7 @@
  */
 
 #include "timing_pin.h"
+#include "main.h"
 
 #define TIMING_PORT LD2_GPIO_Port
 #define TIMING_PIN LD2_Pin

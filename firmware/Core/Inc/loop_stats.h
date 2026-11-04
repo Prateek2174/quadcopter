@@ -8,6 +8,8 @@
 #ifndef INC_LOOP_STATS_H_
 #define INC_LOOP_STATS_H_
 
+#include <stdint.h>
+
 //TODO: min, max, mean, jitter and count from one timestamp per loop.
 //		Pure logic, testable on your PC.
 
