@@ -6,6 +6,7 @@
  */
 #include "demo_tasks.h"
 #include "app_config.h"
+#include "mem_monitor.h"
 
 static volatile uint32_t slow_err_count;
 static volatile uint32_t fast_err_count;
@@ -104,10 +105,8 @@ static void fast_task(void * pv_parameters){
 
 void demo_tasks_init(void){
 
-	//TODO: creates both tasks with xTaskCreate using your priorities and
-	//		stack sizes from app_config.h.
-	//		Check the return value of each call.
-	//		Decide what the code should do if creation fails.
+	TaskHandle_t fast_handle;
+	TaskHandle_t slow_handle;
 
 	//fast task:
 
@@ -116,7 +115,7 @@ void demo_tasks_init(void){
 									 STACK_FAST_WORDS,
 									 NULL,
 									 PRI_TASK_FAST,
-									 NULL
+									 &fast_handle
 									 );
 
 	 //slow task:
@@ -126,21 +125,17 @@ void demo_tasks_init(void){
 									 STACK_SLOW_WORDS,
 									 NULL,
 									 PRI_TASK_SLOW,
-									 NULL
+									 &slow_handle
 									 );
 
-
-		 //TODO: do something here if the task failed to create
-
 	 configASSERT(fast_task_ok == pdPASS);
+	 mem_monitor_register("fast_task", fast_handle); //register the task handle for mem_monitoring
 
 		 //disables interrupts and spins forever,
 		 //which parks the CPU at a place a debugger can find
 
-
-		//TODO: do something here if the task failed to create
-
-	configASSERT(slow_task_ok == pdPASS);
+	 configASSERT(slow_task_ok == pdPASS);
+	 mem_monitor_register("slow_task", slow_handle);
 
 
 }
